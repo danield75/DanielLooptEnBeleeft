@@ -18,20 +18,22 @@ public class AppDbContext : DbContext
             .HasForeignKey<RaceReport>(v => v.RunningRaceId)
             .OnDelete(DeleteBehavior.Cascade);
 
-        modelBuilder.Entity<RunningRace>()
-            .Property(x => x.RaceName)
-            .HasMaxLength(200);
+        modelBuilder.Entity<RunningRace>(entity =>
+        {
+            entity.Property(e => e.RaceName)
+                .HasMaxLength(200);
 
-        modelBuilder.Entity<RunningRace>()
-            .Property(x => x.ExternelLinkToRace)
-            .HasMaxLength(1000);
+            entity.Property(e => e.RacePlace)
+                .HasMaxLength(200);
 
-        modelBuilder.Entity<RunningRace>()
-            .Property(x => x.LinkToRaceResult)
-            .HasMaxLength(1000);
+            entity.Property(e => e.LinkToRaceWebsite)
+                .HasMaxLength(1000);
 
-        modelBuilder.Entity<RunningRace>()
-            .Property(x => x.LinkToRaceReport)
-            .HasMaxLength(1000);
+            entity.Property(e => e.LinkToRaceResult)
+                .HasMaxLength(1000);
+
+            entity.Property(e => e.LinkToRaceReport)
+                .HasMaxLength(1000);
+        });
     }
 }

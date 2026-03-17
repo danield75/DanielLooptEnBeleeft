@@ -1,5 +1,5 @@
 ﻿public enum DistanceUnit
 {
-    Km = 0,
-    M = 1
+    M = 0,
+    Km = 1
 }

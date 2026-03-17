@@ -4,26 +4,28 @@ public class RunningRace
 {
     public int Id { get; set; }
 
-    public DateOnly Datum { get; set; }
+    public required DateOnly Datum { get; set; }
 
-    public decimal Distance { get; set; }
-    public DistanceUnit DistanceUnit { get; set; }
+    public required int Distance { get; set; }
+    public required DistanceUnit DistanceUnit { get; set; }
 
-    public string RaceName { get; set; } = string.Empty;
+    public required string RaceName { get; set; }
 
-    public string? ExternelLinkToRace { get; set; }
+    public required string RacePlace { get; set; }
 
-    // uu:mm:ss
-    public TimeSpan FinishTime { get; set; }
+    public TimeSpan? RaceStartTime { get; set; }
 
-    // km/h (kan berekend worden, maar jij wil het als veld: ok)
-    public decimal SpeedKmPerHour { get; set; }
+    public string? LinkToRaceWebsite { get; set; }
 
-    public string? OverallPlace { get; set; }           // bv "16/16"
-    public string? AgeCategoryPlace { get; set; } // bv "3/10"
+    public TimeSpan? FinishTime { get; set; }
+
+    public int? OverallPlace { get; set; }
+    public int? NumberParticipantsOverall { get; set; }
+    public int? AgeCategoryPlace { get; set; }
+    public int? NumberParticipantsAgeCategory { get; set; }
 
     public string? LinkToRaceResult { get; set; }
-    public string? LinkToRaceReport { get; set; } // handig als je ook extern verslag wil
+    public string? LinkToRaceReport { get; set; }
 
     public RaceReport? RaceReport { get; set; }
 }

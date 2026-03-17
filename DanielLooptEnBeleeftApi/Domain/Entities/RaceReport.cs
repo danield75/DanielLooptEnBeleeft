@@ -8,5 +8,5 @@ public class RaceReport
     public RunningRace RunningRace { get; set; } = null!;
 
     // HTML toegestaan
-    public string HtmlText { get; set; } = string.Empty;
+    public string ReportText { get; set; } = string.Empty;
 }

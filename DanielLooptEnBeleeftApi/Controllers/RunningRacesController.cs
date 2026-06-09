@@ -1,4 +1,5 @@
-﻿using DanielLooptEnBeleeftApi.Domain.Entities;
+﻿using DanielLooptEnBeleeftApi.Application.Services;
+using DanielLooptEnBeleeftApi.Domain.Entities;
 using DanielLooptEnBeleeftApi.Infrastructure.Data;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
@@ -9,122 +10,46 @@ namespace DanielLooptEnBeleeftApi.Controllers;
 [Route("api/[controller]")]
 public class RunningRacesController : ControllerBase
 {
-    private readonly AppDbContext _context;
+    private readonly RunningRaceService _service;
 
-    public RunningRacesController(AppDbContext context)
+    public RunningRacesController(RunningRaceService service)
     {
-        _context = context;
+        _service = service;
     }
 
     // GET: api/RunningRaces
     [HttpGet]
-    public async Task<ActionResult<IEnumerable<RunningRace>>> GetAll()
-    {
-        var races = await _context.RunningRaces
-            .Include(r => r.RaceReport)
-            .OrderByDescending(r => r.Datum)
-            .ToListAsync();
-
-        return Ok(races);
-    }
+    public async Task<ActionResult<IEnumerable<RunningRace>>> GetAll(CancellationToken ct)
+        => Ok(await _service.GetAllAsync(ct));
 
     // GET: api/RunningRaces/5
     [HttpGet("{id:int}")]
-    public async Task<ActionResult<RunningRace>> GetById(int id)
+    public async Task<ActionResult<RunningRace>> GetById(int id, CancellationToken ct)
     {
-        var race = await _context.RunningRaces
-            .Include(r => r.RaceReport)
-            .FirstOrDefaultAsync(r => r.Id == id);
-
-        if (race == null)
-        {
-            return NotFound();
-        }
-
-        return Ok(race);
+        var race = await _service.GetByIdAsync(id, ct);
+        return race is null ? NotFound() : Ok(race);
     }
 
     // POST: api/RunningRaces
     [HttpPost]
-    public async Task<ActionResult<RunningRace>> Create(RunningRace runningRace)
+    public async Task<ActionResult<RunningRace>> Create(RunningRace runningRace, CancellationToken ct)
     {
-        _context.RunningRaces.Add(runningRace);
-        await _context.SaveChangesAsync();
-
-        return CreatedAtAction(nameof(GetById), new { id = runningRace.Id }, runningRace);
+        var created = await _service.CreateAsync(runningRace, ct);
+        return CreatedAtAction(nameof(GetById), new { id = created.Id }, created);
     }
 
     // PUT: api/RunningRaces/5
     [HttpPut("{id:int}")]
-    public async Task<IActionResult> Update(int id, RunningRace runningRace)
+    public async Task<IActionResult> Update(int id, RunningRace runningRace, CancellationToken ct)
     {
-        if (id != runningRace.Id)
-        {
-            return BadRequest("Id in route does not match body.");
-        }
+        if (id != runningRace.Id) return BadRequest("Id in route does not match body.");
 
-        var existingRace = await _context.RunningRaces
-            .Include(r => r.RaceReport)
-            .FirstOrDefaultAsync(r => r.Id == id);
-
-        if (existingRace == null)
-        {
-            return NotFound();
-        }
-
-        existingRace.Datum = runningRace.Datum;
-        existingRace.Distance = runningRace.Distance;
-        existingRace.DistanceUnit = runningRace.DistanceUnit;
-        existingRace.RaceName = runningRace.RaceName;
-        existingRace.RacePlace = runningRace.RacePlace;
-        existingRace.RaceStartTime = runningRace.RaceStartTime;
-        existingRace.LinkToRaceWebsite = runningRace.LinkToRaceWebsite;
-        existingRace.FinishTime = runningRace.FinishTime;
-        existingRace.OverallPlace = runningRace.OverallPlace;
-        existingRace.NumberParticipantsOverall = runningRace.NumberParticipantsOverall;
-        existingRace.AgeCategoryPlace = runningRace.AgeCategoryPlace;
-        existingRace.NumberParticipantsAgeCategory = runningRace.NumberParticipantsAgeCategory;
-        existingRace.LinkToRaceResult = runningRace.LinkToRaceResult;
-        existingRace.LinkToRaceReport = runningRace.LinkToRaceReport;
-
-        if (runningRace.RaceReport is null)
-        {
-            existingRace.RaceReport = null;
-        }
-        else if (existingRace.RaceReport is null)
-        {
-            existingRace.RaceReport = new RaceReport
-            {
-                RunningRaceId = existingRace.Id,
-                ReportText = runningRace.RaceReport.ReportText
-            };
-        }
-        else
-        {
-            existingRace.RaceReport.ReportText = runningRace.RaceReport.ReportText;
-        }
-
-        await _context.SaveChangesAsync();
-
-        return NoContent();
+        var ok = await _service.UpdateAsync(id, runningRace, ct);
+        return ok ? NoContent() : NotFound();
     }
 
     // DELETE: api/RunningRaces/5
     [HttpDelete("{id:int}")]
-    public async Task<IActionResult> Delete(int id)
-    {
-        var race = await _context.RunningRaces
-            .Include(r => r.RaceReport)
-            .FirstOrDefaultAsync(r => r.Id == id);
-
-        if (race == null)
-        {
-            return NotFound();
-        }
-
-        _context.RunningRaces.Remove(race);
-        await _context.SaveChangesAsync();
-
-        return NoContent();
-    }
+    public async Task<IActionResult> Delete(int id, CancellationToken ct)
+            => (await _service.DeleteAsync(id, ct)) ? NoContent() : NotFound();
 }

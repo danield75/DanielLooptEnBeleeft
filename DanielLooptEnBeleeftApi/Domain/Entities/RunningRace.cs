@@ -11,7 +11,7 @@ public class RunningRace
 
     public required string RaceName { get; set; }
 
-    public required string RacePlace { get; set; }
+    public string? RacePlace { get; set; }
 
     public TimeSpan? RaceStartTime { get; set; }
 

@@ -6,7 +6,7 @@ public class RunningRace
 
     public required DateOnly Datum { get; set; }
 
-    public required int Distance { get; set; }
+    public required decimal Distance { get; set; }
     public required DistanceUnit DistanceUnit { get; set; }
 
     public required string RaceName { get; set; }

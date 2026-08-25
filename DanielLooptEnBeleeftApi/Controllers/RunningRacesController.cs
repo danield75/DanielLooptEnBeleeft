@@ -1,8 +1,7 @@
-﻿using DanielLooptEnBeleeftApi.Application.Services;
+﻿using DanielLooptEnBeleeftApi.Contracts.RunningRaces;
 using DanielLooptEnBeleeftApi.Domain.Entities;
-using DanielLooptEnBeleeftApi.Infrastructure.Data;
+using DanielLooptEnBeleeftApi.Interfaces;
 using Microsoft.AspNetCore.Mvc;
-using Microsoft.EntityFrameworkCore;
 
 namespace DanielLooptEnBeleeftApi.Controllers;
 
@@ -10,9 +9,9 @@ namespace DanielLooptEnBeleeftApi.Controllers;
 [Route("api/[controller]")]
 public class RunningRacesController : ControllerBase
 {
-    private readonly RunningRaceService _service;
+    private readonly IRunningRaceService _service;
 
-    public RunningRacesController(RunningRaceService service)
+    public RunningRacesController(IRunningRaceService service)
     {
         _service = service;
     }
@@ -52,4 +51,12 @@ public class RunningRacesController : ControllerBase
     [HttpDelete("{id:int}")]
     public async Task<IActionResult> Delete(int id, CancellationToken ct)
             => (await _service.DeleteAsync(id, ct)) ? NoContent() : NotFound();
+
+    // POST api/runningraces/import/blogspot
+    [HttpPost("import/blogspot")]
+    public async Task<ActionResult<ImportRunningRacesResult>> ImportFromBlogspot(CancellationToken ct)
+    {
+        var result = await _service.ImportFromBlogspotAsync(ct);
+        return Ok(result);
+    }
 }

@@ -1,4 +1,4 @@
-﻿using DanielLooptEnBeleeftApi.Application.Interfaces;
+﻿using DanielLooptEnBeleeftApi.Interfaces;
 using DanielLooptEnBeleeftApi.Domain.Entities;
 using DanielLooptEnBeleeftApi.Infrastructure.Data;
 using Microsoft.EntityFrameworkCore;
@@ -16,6 +16,7 @@ public class RunningRaceRepository : IRunningRaceRepository
 
     public Task<List<RunningRace>> GetAllWithReportAsync(CancellationToken ct = default)
         => _context.RunningRaces
+            .AsNoTracking()
             .Include(r => r.RaceReport)
             .OrderByDescending(r => r.Datum)
             .ToListAsync(ct);
@@ -33,4 +34,13 @@ public class RunningRaceRepository : IRunningRaceRepository
 
     public Task SaveChangesAsync(CancellationToken ct = default)
         => _context.SaveChangesAsync(ct);
+
+    public Task<List<(DateOnly Datum, string RaceName)>> GetExistingKeysAsync(CancellationToken ct = default)
+        => _context.RunningRaces
+            .AsNoTracking()
+            .Select(r => new ValueTuple<DateOnly, string>(r.Datum, r.RaceName))
+            .ToListAsync(ct);
+
+    public Task<List<RunningRace>> GetAllTrackedAsync(CancellationToken ct = default)
+        => _context.RunningRaces.ToListAsync(ct);
 }

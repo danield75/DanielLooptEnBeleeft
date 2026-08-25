@@ -1,9 +1,9 @@
 using DanielLooptEnBeleeftApi.Infrastructure.Data;
-using DanielLooptEnBeleeftApi.Application.Interfaces;
-using DanielLooptEnBeleeftApi.Application.Services;
 using DanielLooptEnBeleeftApi.Infrastructure.Repositories;
 
 using Microsoft.EntityFrameworkCore;
+using DanielLooptEnBeleeftApi.Interfaces;
+using DanielLooptEnBeleeftApi.Services;
 
 var builder = WebApplication.CreateBuilder(args);
 
@@ -31,12 +31,13 @@ builder.Services.AddCors(options =>
 // Learn more about configuring Swagger/OpenAPI at https://aka.ms/aspnetcore/swashbuckle
 builder.Services.AddEndpointsApiExplorer();
 builder.Services.AddSwaggerGen();
+builder.Services.AddHttpClient();
 
 builder.Services.AddDbContext<AppDbContext>(options =>
     options.UseSqlServer(builder.Configuration.GetConnectionString("DefaultConnection")));
 
 builder.Services.AddScoped<IRunningRaceRepository, RunningRaceRepository>();
-builder.Services.AddScoped<RunningRaceService>();
+builder.Services.AddScoped<IRunningRaceService, RunningRaceService>();
 
 var app = builder.Build();
 

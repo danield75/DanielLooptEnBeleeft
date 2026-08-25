@@ -1,6 +1,6 @@
 ﻿using DanielLooptEnBeleeftApi.Domain.Entities;
 
-namespace DanielLooptEnBeleeftApi.Application.Interfaces;
+namespace DanielLooptEnBeleeftApi.Interfaces;
 
 public interface IRunningRaceRepository
 {
@@ -11,4 +11,8 @@ public interface IRunningRaceRepository
     Task SaveChangesAsync(CancellationToken ct = default);
 
     void Remove(RunningRace race);
+
+    Task<List<(DateOnly Datum, string RaceName)>> GetExistingKeysAsync(CancellationToken ct = default);
+
+    Task<List<RunningRace>> GetAllTrackedAsync(CancellationToken ct = default);
 }

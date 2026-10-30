@@ -1,0 +1,18 @@
+﻿using System.Text.Json.Serialization;
+
+namespace DanielLooptEnBeleeftApi.DTOs.Strava;
+
+public class StravaTokenResponse
+{
+    [JsonPropertyName("access_token")]
+    public string AccessToken { get; set; } = string.Empty;
+
+    [JsonPropertyName("refresh_token")]
+    public string RefreshToken { get; set; } = string.Empty;
+
+    [JsonPropertyName("expires_at")]
+    public long ExpiresAt { get; set; }
+
+    [JsonPropertyName("token_type")]
+    public string TokenType { get; set; } = string.Empty;
+}

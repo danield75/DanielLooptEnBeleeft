@@ -1,9 +1,9 @@
+using DanielLooptEnBeleeftApi.Domain.Options;
 using DanielLooptEnBeleeftApi.Infrastructure.Data;
 using DanielLooptEnBeleeftApi.Infrastructure.Repositories;
-
-using Microsoft.EntityFrameworkCore;
 using DanielLooptEnBeleeftApi.Interfaces;
 using DanielLooptEnBeleeftApi.Services;
+using Microsoft.EntityFrameworkCore;
 
 var builder = WebApplication.CreateBuilder(args);
 
@@ -36,8 +36,14 @@ builder.Services.AddHttpClient();
 builder.Services.AddDbContext<AppDbContext>(options =>
     options.UseSqlServer(builder.Configuration.GetConnectionString("DefaultConnection")));
 
+// Options
+builder.Services.Configure<StravaOptions>(
+    builder.Configuration.GetSection("Strava"));
+
 builder.Services.AddScoped<IRunningRaceRepository, RunningRaceRepository>();
 builder.Services.AddScoped<IRunningRaceService, RunningRaceService>();
+builder.Services.AddScoped<IStravaService, StravaService>();
+builder.Services.AddHttpClient<IReverseGeocodingService, NominatimGeocodingService>();
 
 var app = builder.Build();
 

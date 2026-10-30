@@ -11,4 +11,5 @@ public interface IRunningRaceService
     Task<bool> DeleteAsync(int id, CancellationToken ct = default);
     Task<bool> UpdateAsync(int id, RunningRace runningRace, CancellationToken ct = default);
     Task<ImportRunningRacesResult> ImportFromBlogspotAsync(CancellationToken ct = default);
+    Task<int> BackfillRacePlaceFromNameAsync(CancellationToken ct = default);
 }

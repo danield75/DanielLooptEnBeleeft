@@ -56,7 +56,9 @@ public class RunningRacesController : ControllerBase
     [HttpPost("import/blogspot")]
     public async Task<ActionResult<ImportRunningRacesResult>> ImportFromBlogspot(CancellationToken ct)
     {
-        var result = await _service.ImportFromBlogspotAsync(ct);
+        //var result = await _service.ImportFromBlogspotAsync(ct);
+        var result = await _service.BackfillRacePlaceFromNameAsync(ct);
+
         return Ok(result);
     }
 }

@@ -240,6 +240,47 @@ public class RunningRaceService : IRunningRaceService
         );
     }
 
+    public async Task<int> BackfillRacePlaceFromNameAsync(CancellationToken ct = default)
+    {
+        var races = await _repo.GetAllTrackedAsync(ct); // ophalen zonder AsNoTracking, want we gaan updaten
+
+        int updated = 0;
+
+        foreach (var race in races)
+        {
+            var name = race.RaceName?.Trim();
+            if (string.IsNullOrWhiteSpace(name))
+                continue;
+
+            var lastSpaceIndex = name.LastIndexOf(' ');
+            if (lastSpaceIndex < 0)
+                continue; // geen spatie -> geen apart laatste woord
+
+            var lastWord = name[(lastSpaceIndex + 1)..].Trim();
+            var namePart = name[..lastSpaceIndex].Trim();
+
+            if (lastWord == "*")
+            {
+                // Plaats is al ingevuld -> enkel de "*" uit de naam verwijderen
+                race.RaceName = namePart;
+                updated++;
+            }
+            else
+            {
+                // Laatste woord is de plaats -> uit naam halen en in RacePlace zetten
+                race.RaceName = namePart;
+                race.RacePlace = lastWord;
+                updated++;
+            }
+        }
+
+        if (updated > 0)
+            await _repo.SaveChangesAsync(ct);
+
+        return updated;
+    }
+
+    // Helper functions
     private static bool TryParseDistance(
         string? input,
         out decimal distance,

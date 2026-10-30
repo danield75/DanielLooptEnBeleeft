@@ -104,9 +104,39 @@ namespace DanielLooptEnBeleeftApi.Migrations
                     b.Property<TimeSpan?>("RaceStartTime")
                         .HasColumnType("time");
 
+                    b.Property<long?>("StravaActivityId")
+                        .HasColumnType("bigint");
+
                     b.HasKey("Id");
 
                     b.ToTable("RunningRaces");
+                });
+
+            modelBuilder.Entity("DanielLooptEnBeleeftApi.Domain.Entities.StravaToken", b =>
+                {
+                    b.Property<int>("Id")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("int");
+
+                    SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("Id"));
+
+                    b.Property<string>("AccessToken")
+                        .IsRequired()
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<long>("ExpiresAt")
+                        .HasColumnType("bigint");
+
+                    b.Property<string>("RefreshToken")
+                        .IsRequired()
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<DateTime>("UpdatedAt")
+                        .HasColumnType("datetime2");
+
+                    b.HasKey("Id");
+
+                    b.ToTable("StravaTokens");
                 });
 
             modelBuilder.Entity("DanielLooptEnBeleeftApi.Domain.Entities.RaceReport", b =>

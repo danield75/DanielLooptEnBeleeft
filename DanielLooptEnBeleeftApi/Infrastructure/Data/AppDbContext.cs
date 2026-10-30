@@ -9,6 +9,7 @@ public class AppDbContext : DbContext
 
     public DbSet<RunningRace> RunningRaces => Set<RunningRace>();
     public DbSet<RaceReport> RaceReports => Set<RaceReport>();
+    public DbSet<StravaToken> StravaTokens => Set<StravaToken>();
 
     protected override void OnModelCreating(ModelBuilder modelBuilder)
     {

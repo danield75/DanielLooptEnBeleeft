@@ -29,4 +29,6 @@ public class RunningRace
     public string? LinkToRaceReport { get; set; }
 
     public RaceReport? RaceReport { get; set; }
+
+    public long? StravaActivityId { get; set; }
 }
